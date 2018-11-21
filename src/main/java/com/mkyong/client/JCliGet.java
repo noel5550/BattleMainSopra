@@ -115,7 +115,8 @@ public String partie(String idPartie , String idEquipe)   {
 public JsonObject plateau(String idPartie) 
 {
 	   Client client = ClientBuilder.newClient();
-	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/game/board/"+idPartie+"?format=(JSON|String|XML)");
+	//   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/game/board/"+idPartie+"?format=(JSON|String|XML)");
+	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/game/board/"+idPartie);
 	   Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
 	   Response response = invocationBuilder.get();
 	  
