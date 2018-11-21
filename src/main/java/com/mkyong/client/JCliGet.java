@@ -7,6 +7,8 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.google.gson.JsonObject;
+
 import java.util.Random;
 
 public class JCliGet {
@@ -67,7 +69,7 @@ public String affrontementBot(int nbIA, String idEquipe)  {
 	    String resp = "";
 		if (0<nbIA && nbIA<6 ){
 			Client client = ClientBuilder.newClient();
-			   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/practice/new/"+nbIA+"/"+idEquipe+"");
+			   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/practice/new/"+nbIA+"/"+idEquipe);
 			   Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
 			   Response response = invocationBuilder.get();
 			   
@@ -110,28 +112,28 @@ public String partie(String idPartie , String idEquipe)   {
 
 //Retourne le plateau de jeu de la partie concernée.
 // le plateau est au format JSON
-public String plateau1(String idPartie)
+public JsonObject plateau(String idPartie) 
 {
 	   Client client = ClientBuilder.newClient();
 	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/game/board/"+idPartie+"?format=(JSON|String|XML)");
 	   Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
 	   Response response = invocationBuilder.get();
 	  
-	   String resp = response.readEntity(String.class);
+	   JsonObject resp = response.readEntity(JsonObject.class);
 	   response.getStatus();
 	   return resp;
 }
 
-
-public String plateau2(String idPartie, String idEquipe)
+//Retourne le plateau de jeu de la partie concernée.
+//La première équipe retournée est celle dont l'id est renseigné.
+public JsonObject plateau(String idPartie, String idEquipe)
 {
-	
 	   Client client = ClientBuilder.newClient();
 	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/game/board/"+idPartie+"?format=(JSON|String|XML)");
 	   Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
 	   Response response = invocationBuilder.get();
 	  
-	   String resp = response.readEntity(String.class);
+	   JsonObject resp = response.readEntity(JsonObject.class);
 	   response.getStatus();
 	   return resp;
 }
@@ -181,7 +183,7 @@ public String move(String idPartie , String idEquipe , String move)
 }
 
 
-public String recupereAdversaire(String idPartie, String idEquipe)
+public String nomAdversaire(String idPartie, String idEquipe)
 {
 	   Client client = ClientBuilder.newClient();
 	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/game/opponent/"+idPartie+"/"+idEquipe);
