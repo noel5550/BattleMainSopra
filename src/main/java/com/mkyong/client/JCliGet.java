@@ -23,9 +23,11 @@ public class JCliGet {
    }
    
    /**
- * 
+ *  retourne l'identifiant de l'équipe
+ *  fonction à modifier (la remettre en void)
  */
-public void connect() {
+public String connect() {
+	
 	   Client client = ClientBuilder.newClient();
 	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/player/getIdEquipe/NoelEtSesAmisInferieurs/KJheror883!");
 	   Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
@@ -33,6 +35,7 @@ public void connect() {
 	   
 	   String resp = response.readEntity(String.class);
 	   System.out.println(resp);
+	   return resp;
    }
    
    
