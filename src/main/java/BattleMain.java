@@ -55,7 +55,10 @@ public class BattleMain {
 //		}
 		
 		JCliGet jcg = new JCliGet();
-		jcg.affrontement("c8caa067-0ab6-4bde-a6ce-d4942ea07c95");
+		//jcg.affrontement("c8caa067-0ab6-4bde-a6ce-d4942ea07c95");
+		//jcg.affrontementBot(6,"c8caa067-0ab6-4bde-a6ce-d4942ea07c95");
+		//jcg.plateau("5");
+		jcg.partie("5" , "c8caa067-0ab6-4bde-a6ce-d4942ea07c95");
 	}
 	
 	
