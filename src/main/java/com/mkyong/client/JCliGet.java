@@ -93,7 +93,7 @@ public String affrontementBot(int nbIA, String idEquipe)  {
    "CANCELLED" si la partie a été annulée
 * @param idPartie
 * @param idEquipe
-* @return"CANPLAY" si vou
+* @return"CANPLAY" 
 */
 public String partie(String idPartie , String idEquipe)   {
 	
