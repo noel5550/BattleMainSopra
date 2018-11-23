@@ -76,11 +76,9 @@ public String affrontementBot(int nbIA, String idEquipe)  {
 			   resp = response.readEntity(String.class);
 			   System.out.println(resp);
 		}
-	   
 	   return resp;
    }
    
-
 
 //DEROULEMENT DE PARTIE
 
@@ -131,7 +129,7 @@ public String plateau(String idPartie)
 public String plateau(String idPartie, String idEquipe)
 {
 	   Client client = ClientBuilder.newClient();
-	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/game/board/"+idPartie+"?format=(JSON|String|XML)");
+	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/game/board/"+idPartie+"?format=JSON");
 	   Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
 	   Response response = invocationBuilder.get();
 	  
