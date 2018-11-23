@@ -112,7 +112,7 @@ public String partie(String idPartie , String idEquipe)   {
 
 //Retourne le plateau de jeu de la partie concernée.
 // le plateau est au format JSON
-public JsonObject plateau(String idPartie) 
+public String plateau(String idPartie) 
 {
 	   Client client = ClientBuilder.newClient();
 	//   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/game/board/"+idPartie+"?format=(JSON|String|XML)");
@@ -120,22 +120,23 @@ public JsonObject plateau(String idPartie)
 	   Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
 	   Response response = invocationBuilder.get();
 	  
-	   JsonObject resp = response.readEntity(JsonObject.class);
-	   response.getStatus();
+	   String resp = response.readEntity(String.class);
+	 
+	  
 	   return resp;
 }
 
 //Retourne le plateau de jeu de la partie concernée.
 //La première équipe retournée est celle dont l'id est renseigné.
-public JsonObject plateau(String idPartie, String idEquipe)
+public String plateau(String idPartie, String idEquipe)
 {
 	   Client client = ClientBuilder.newClient();
 	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/game/board/"+idPartie+"?format=(JSON|String|XML)");
 	   Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
 	   Response response = invocationBuilder.get();
 	  
-	   JsonObject resp = response.readEntity(JsonObject.class);
-	   response.getStatus();
+	   String resp = response.readEntity(String.class);
+	
 	   return resp;
 }
 
