@@ -19,6 +19,7 @@ public class practice {
 	private String resp = "";
 	//private String attack = "";
 	private int nbTour = 1;
+	JSONArray team;
 	
 	
 	private JSONArray[] perso = new JSONArray[3];
@@ -43,8 +44,7 @@ public class practice {
 			
 			
 			this.idPartie = client.affrontementBot(5, this.idEquipe); // creation de la nouvelle partie contre l'ia
-			this.plateau = client.plateau(this.idPartie); // creation du plateau
-			this.plateauJeu = new JSONObject(this.plateau);
+			this.plateauJeu = new JSONObject(client.plateau(this.idPartie,this.idEquipe));
 			
 		//	System.out.println(plateauJeu);
 			jouerPartie(idPartie, idEquipe);
@@ -52,10 +52,9 @@ public class practice {
 	
 	public void jouerPartie(String idPartie, String idEquipe) 
 	{
-		JSONArray team = plateauJeu.getJSONArray("playerBoards").getJSONObject(0).getJSONArray("fighters");
-		JSONArray bot = plateauJeu.getJSONArray("playerBoards").getJSONObject(1).getJSONArray("fighters");
-		System.out.println("team "+ team);
-		System.out.println("bot "+bot);
+	//JSONArray bot = plateauJeu.getJSONArray("playerBoards").getJSONObject(1).getJSONArray("fighters");
+		
+	//	System.out.println("bot "+bot);
 		resp = client.partie(idPartie, idEquipe); // recupère le statu de la partie
 		
 		do {
@@ -109,8 +108,10 @@ public class practice {
 	{
 			if (nbTour<4)
 			{
+				System.out.println("ici");
 				switch(nbTour)
 				{
+			
 				case 1: client.move(this.idPartie, this.idEquipe, "PRIEST");break;
 				case 2: client.move(this.idPartie, this.idEquipe, "ORC");break;
 				case 3: client.move(this.idPartie, this.idEquipe, "GUARD");break;
@@ -118,8 +119,10 @@ public class practice {
 			}
 			else 
 			{
+				team = plateauJeu.getJSONArray("playerBoards").getJSONObject(0).getJSONArray("fighters");
+				System.out.println("team "+ team);
 				//String a = client.move(idPartie, idEquipe, "A1,ATTACK,E1$A2,DEFEND,E1$A3,REST,A3");
-				String a = client.move(idPartie, idEquipe, attack[i]);
+				String a = client.move(idPartie, idEquipe, "A1,ATTACK,E1$A2,DEFEND,E1$A3,REST,A3");
 		
 				switch (a)
 				{

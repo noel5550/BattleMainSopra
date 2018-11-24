@@ -129,7 +129,7 @@ public String plateau(String idPartie)
 public String plateau(String idPartie, String idEquipe)
 {
 	   Client client = ClientBuilder.newClient();
-	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/game/board/"+idPartie+"?format=JSON");
+	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/game/board/"+idPartie+"/"+idEquipe+"?format=JSON");
 	   Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
 	   Response response = invocationBuilder.get();
 	  
