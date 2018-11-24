@@ -1,9 +1,10 @@
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONObject;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.mkyong.client.JCliGet;
+
+import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+
 
 
 
@@ -13,20 +14,24 @@ public class practice {
 	private String idPartie;
 	private String idAdversaire;
 	private String plateau;
+	private JSONObject plateauJeu;
 	
 	private String resp = "";
-	private String attack = "";
+	//private String attack = "";
 	private int nbTour = 1;
 	
 	
 	private JSONArray[] perso = new JSONArray[3];
+	private String[] attack = new String[3];
+	int i = 0;
 	 
 	static JCliGet client = new JCliGet();
-	Gson gson = new Gson();
+
+	
 	
 	
 	public practice()
-	{
+	{	
 		newGame();
 	}
 	
@@ -35,14 +40,24 @@ public class practice {
 		private void newGame()
 		{
 			this.idEquipe = client.connect(); // recupération de l'identifiant du client	
+			
+			
 			this.idPartie = client.affrontementBot(5, this.idEquipe); // creation de la nouvelle partie contre l'ia
-		//	this.plateau = client.plateau(this.idPartie); // creation du tableau
+			this.plateau = client.plateau(this.idPartie); // creation du plateau
+			this.plateauJeu = new JSONObject(this.plateau);
+			
+		//	System.out.println(plateauJeu);
 			jouerPartie(idPartie, idEquipe);
 		}
 	
 	public void jouerPartie(String idPartie, String idEquipe) 
 	{
+		JSONArray team = plateauJeu.getJSONArray("playerBoards").getJSONObject(0).getJSONArray("fighters");
+		JSONArray bot = plateauJeu.getJSONArray("playerBoards").getJSONObject(1).getJSONArray("fighters");
+		System.out.println("team "+ team);
+		System.out.println("bot "+bot);
 		resp = client.partie(idPartie, idEquipe); // recupère le statu de la partie
+		
 		do {
 			try {
 				switch (resp)
@@ -54,44 +69,44 @@ public class practice {
 						
 					case "CANTPLAY":
 							Thread.sleep(500);
-							System.out.println("can't play");
 						break;
+			
 						
-					case "VICTORY":
-						System.out.println("victoire");
-						break;
-						
-					case "DEFEAT":
-						System.out.println("defaite");
-						return;
-						
-					
-					case "DRAW":
-						System.out.println("draw");
-						return;
-					
-					case "CANCELLED":
-						System.out.println("annulé");
-						return;	
+//					case "VICTORY":
+//						System.out.println("victoire");
+//						break;
+//						
+//					case "DEFEAT":
+//						System.out.println("defaite");
+//						return;
+//						
+//					
+//					case "DRAW":
+//						System.out.println("draw");
+//						return;
+//					
+//					case "CANCELLED":
+//						System.out.println("annulé");
+//						return;	
 				}
 				
-				System.out.println("etat plateau : "+client.plateau(idPartie));
+				
+		
+			
 				resp = client.partie(idPartie, idEquipe); // recupère le statu de la partie
 				System.out.println(resp);
-				
 				
 				nbTour++;
 				
 				
-			}catch(InterruptedException e) {e.printStackTrace();}
+			}catch(InterruptedException e) {resp = "CANCELLED";}
 			
-		}while(resp != "VICTORY" && resp != "DEFEAT" &&resp != "DRAW" && resp != "CANCELLED");
+		}while(!resp.equals("DEFEAT") && !resp.equals("VICTORY") && !resp.equals("DRAW"));
 	}
 	
 	// apelle le serveur avec l'attaque et regarde la valeur de retour
 	private void action()
 	{
-		//	attack = client.move(this.idPartie, this.idEquipe, move);
 			if (nbTour<4)
 			{
 				switch(nbTour)
@@ -101,19 +116,19 @@ public class practice {
 				case 3: client.move(this.idPartie, this.idEquipe, "GUARD");break;
 				}
 			}
-			
 			else 
 			{
-				String a = client.move(idPartie, idEquipe, "A1,ATTACK,E1$A2,DEFEND,E1$A3,REST,A3");
+				//String a = client.move(idPartie, idEquipe, "A1,ATTACK,E1$A2,DEFEND,E1$A3,REST,A3");
+				String a = client.move(idPartie, idEquipe, attack[i]);
+		
 				switch (a)
 				{
 				case "OK":
-					System.out.println("ok");
+				
 					break;
 				
 				case "FORBIDDEN":// defaite sur la partie
-					System.out.println("interdit"); 
-				//	resp = "DEFEAT";
+					resp = "DEFEAT";
 					break;
 					
 				case "NOTYET":
@@ -123,8 +138,7 @@ public class practice {
 				case "GAMEOVER":
 					System.out.println("partie fini");
 				}	
-			}
-//					
+			}			
 	}
 	
 	
