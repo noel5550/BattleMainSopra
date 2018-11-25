@@ -1,5 +1,6 @@
 package com.mkyong.client;
 
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
@@ -7,9 +8,11 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.google.gson.JsonObject;
 
-import java.util.Random;
+import com.google.gson.Gson;
+
+
+
 
 public class JCliGet {
 
@@ -110,32 +113,57 @@ public String partie(String idPartie , String idEquipe)   {
 
 //Retourne le plateau de jeu de la partie concernée.
 // le plateau est au format JSON
-public String plateau(String idPartie) 
+public Board plateau(String idPartie) 
 {
 	   Client client = ClientBuilder.newClient();
-	//   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/game/board/"+idPartie+"?format=(JSON|String|XML)");
 	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/game/board/"+idPartie);
 	   Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
 	   Response response = invocationBuilder.get();
 	  
+	   Gson gson = new Gson();
+	   
 	   String resp = response.readEntity(String.class);
-	 
-	  
-	   return resp;
+	   
+	   Board board = gson.fromJson(resp, Board.class);
+	   
+//	   if (board != null) {
+//		   for(PlayerBoard playerBoards : board.getPlayerBoards()) {
+//			   for(Fighter fight : playerBoards.getFighters()) {
+//				   System.out.println("Combattant:"+ fight.getFighterClass()+"est vivant"+fight.getIsDead()+"point de vie"+fight.getMaxAvailableLife());
+//			   }
+//		   }
+//	   }
+	   return board;
 }
 
 //Retourne le plateau de jeu de la partie concernée.
 //La première équipe retournée est celle dont l'id est renseigné.
-public String plateau(String idPartie, String idEquipe)
+public Board plateau(String idPartie, String idEquipe)
 {
 	   Client client = ClientBuilder.newClient();
 	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/game/board/"+idPartie+"/"+idEquipe+"?format=JSON");
 	   Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
 	   Response response = invocationBuilder.get();
-	  
+	   
+	   Gson gson = new Gson();
+	   
 	   String resp = response.readEntity(String.class);
-	
-	   return resp;
+
+	   Board board = gson.fromJson(resp, Board.class);
+	   
+//	   if (board != null) {
+//		   for(PlayerBoard playerBoards : board.getPlayerBoards()) {
+//			   System.out.println();
+//			   System.out.println("nom de l'équipe: "+playerBoards.getPlayerName());
+//			   System.out.println();
+//			   
+//			   for(Fighter fight : playerBoards.getFighters()) {
+//				   System.out.println(fight.getFighterClass()+" est mort "+fight.getIsDead()+" point de vie "+fight.getCurrentLife()+"point d'action "+fight.getCurrentMana());
+//			   }     
+//		   }
+//	   }
+	   
+	   return board;
 }
 
 //Retourne le dernier coup joué sur le plateau de la partie indiquée

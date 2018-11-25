@@ -1,4 +1,6 @@
-import com.mkyong.client.JCliGet;
+import com.mkyong.client.*;
+
+import java.util.List;
 
 import org.json.*;
 import org.json.JSONArray;
@@ -19,20 +21,28 @@ public class practice {
 	private String resp = "";
 	//private String attack = "";
 	private int nbTour = 1;
-	JSONArray team;
+	private int index = 0;
 	
 	
-	private JSONArray[] perso = new JSONArray[3];
-	private String[] attack = new String[3];
+	String[] team = new String[3];
+	Fighter[] oponent = new Fighter[6]; // revoir la taille du tableau
+	
+	String currentOp = "E1";
+	
+	
+	
 	int i = 0;
 	 
 	static JCliGet client = new JCliGet();
 
-	
+	Board board;
 	
 	
 	public practice()
 	{	
+		team[0] = "PRIEST";
+		team[1] ="ORC";
+		team[2] = "GUARD";
 		newGame();
 	}
 	
@@ -41,12 +51,8 @@ public class practice {
 		private void newGame()
 		{
 			this.idEquipe = client.connect(); // recupération de l'identifiant du client	
-			
-			
-			this.idPartie = client.affrontementBot(5, this.idEquipe); // creation de la nouvelle partie contre l'ia
-			this.plateauJeu = new JSONObject(client.plateau(this.idPartie,this.idEquipe));
-			
-		//	System.out.println(plateauJeu);
+			this.idPartie = client.affrontementBot(1, this.idEquipe); // creation de la nouvelle partie contre l'ia
+			board = client.plateau(idPartie, idEquipe);
 			jouerPartie(idPartie, idEquipe);
 		}
 	
@@ -62,8 +68,23 @@ public class practice {
 				switch (resp)
 				{
 					case "CANPLAY":
+						board = client.plateau(idPartie, idEquipe);
+
+						   if (nbTour >3 &&board != null) {
+							   for(PlayerBoard playerBoards : board.getPlayerBoards()) {
+								   System.out.println();
+								   System.out.println("nom de l'équipe: "+playerBoards.getPlayerName());
+								   System.out.println();
+								   
+								   for(Fighter fight : playerBoards.getFighters()) {
+									   System.out.println(fight.getFighterClass()+" est mort :"+fight.getIsDead()+"/ point de vie "+fight.getCurrentLife()+" / point d'action: "+fight.getCurrentMana());
+								   }     
+							   }
+						   }
 						this.action();
-						System.out.println("dernier coup joueur : "+nbTour +" "+ client.dernierCoup(idPartie, idEquipe));
+						
+						//System.out.println("dernier coup joueur : "+nbTour +" "+ client.dernierCoup(idPartie, idEquipe));
+						
 						break;
 						
 					case "CANTPLAY":
@@ -71,33 +92,28 @@ public class practice {
 						break;
 			
 						
-//					case "VICTORY":
-//						System.out.println("victoire");
-//						break;
-//						
-//					case "DEFEAT":
-//						System.out.println("defaite");
-//						return;
-//						
-//					
-//					case "DRAW":
-//						System.out.println("draw");
-//						return;
-//					
-//					case "CANCELLED":
-//						System.out.println("annulé");
-//						return;	
+					case "VICTORY":
+						System.out.println("victoire");
+						break;
+						
+					case "DEFEAT":
+						System.out.println("defaite");
+						return;
+						
+					
+					case "DRAW":
+						System.out.println("draw");
+						return;
+					
+					case "CANCELLED":
+						System.out.println("annulé");
+						return;	
 				}
-				
-				
-		
-			
+
 				resp = client.partie(idPartie, idEquipe); // recupère le statu de la partie
 				System.out.println(resp);
-				
 				nbTour++;
-				
-				
+								
 			}catch(InterruptedException e) {resp = "CANCELLED";}
 			
 		}while(!resp.equals("DEFEAT") && !resp.equals("VICTORY") && !resp.equals("DRAW"));
@@ -108,26 +124,51 @@ public class practice {
 	{
 			if (nbTour<4)
 			{
-				System.out.println("ici");
 				switch(nbTour)
 				{
-			
-				case 1: client.move(this.idPartie, this.idEquipe, "PRIEST");break;
-				case 2: client.move(this.idPartie, this.idEquipe, "ORC");break;
-				case 3: client.move(this.idPartie, this.idEquipe, "GUARD");break;
+				case 1: client.move(this.idPartie, this.idEquipe, team[0]);break;
+				case 2:client.move(this.idPartie, this.idEquipe, team[1]);break;
+				case 3: client.move(this.idPartie, this.idEquipe, team[2]);break;
 				}
 			}
 			else 
 			{
-				team = plateauJeu.getJSONArray("playerBoards").getJSONObject(0).getJSONArray("fighters");
-				System.out.println("team "+ team);
-				//String a = client.move(idPartie, idEquipe, "A1,ATTACK,E1$A2,DEFEND,E1$A3,REST,A3");
-				String a = client.move(idPartie, idEquipe, "A1,ATTACK,E1$A2,DEFEND,E1$A3,REST,A3");
-		
+			    board = client.plateau(idPartie);
+			    int j=0;
+			    int n=0;
+			    
+			    
+			    for(PlayerBoard playerBoards : board.getPlayerBoards()) 
+			    {
+			    	for(Fighter fight : playerBoards.getFighters()) { 
+			    		{  
+			    			 if (playerBoards.getPlayerName().equals("NoelEtSesAmisInferieur"))
+					    	 {
+								
+							 }	  
+			    			 else 
+			    			 {
+			    				 oponent[n] = fight;
+			    				 n++;
+			    			 }
+						}     
+			    }
+			    
+				String a = client.move(idPartie, idEquipe,"A1,ATTACK,"+currentOp
+														+ "$A2,ATTACK,"+currentOp
+														+ "$A3,ATTACK,"+currentOp
+														);
 				switch (a)
 				{
 				case "OK":
-				
+					try {
+						if (oponent[0].getIsDead()) currentOp = "E2";
+						else if (oponent[1].getIsDead()) currentOp ="E3";
+					}catch(ArrayIndexOutOfBoundsException e) 
+					{
+						e.printStackTrace();
+					}
+					
 					break;
 				
 				case "FORBIDDEN":// defaite sur la partie
@@ -146,4 +187,5 @@ public class practice {
 	
 	
 
+	}
 }
