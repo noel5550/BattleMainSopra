@@ -1,5 +1,7 @@
 import com.mkyong.client.*;
 
+import javassist.bytecode.Opcode;
+
 import java.util.List;
 
 import org.json.*;
@@ -49,7 +51,7 @@ public class practice {
 	private void newGame()
 	{
 		this.idEquipe = client.connect(); // recupération de l'identifiant du client	
-		this.idPartie = client.affrontementBot(1, this.idEquipe); // creation de la nouvelle partie contre l'ia
+		this.idPartie = client.affrontementBot(5, this.idEquipe); // creation de la nouvelle partie contre l'ia
 		board = client.plateau(idPartie, idEquipe);
 		jouerPartie(idPartie, idEquipe);
 		}
@@ -80,6 +82,8 @@ public class practice {
 							   }
 						   }
 						this.action();
+						
+						System.out.println("enemie  actuel " + currentOp);
 						break;
 						
 					case "CANTPLAY":
@@ -128,86 +132,79 @@ public class practice {
 				case 3: client.move(this.idPartie, this.idEquipe, team[2]);break;
 				}
 			}
+			
+			
 			else 
 			{
 			    board = client.plateau(idPartie);
 			    int j=0;
 			    int n=0;
 			    
-			    
 			    for(PlayerBoard playerBoards : board.getPlayerBoards()) 
 			    {
 			    	for(Fighter fight : playerBoards.getFighters()) 
 			    		{  
-			    			 if (playerBoards.getPlayerName().equals("NoelEtSesAmisInferieur"))
+			    			 if (playerBoards.getPlayerName().equals("NoelEtSesAmisInferieurs"))
 					    	 {
-								
+								System.out.println("aaaaaaaaaaaaaaaa");
 							 }	  
 			    			 else 
 			    			 {
-//			    				 oponent[n] = fight;
-//			    				 n++;
 			    				 oponent.add(fight);
 			    			 }
 						}     
 			    }
-			    
-			    for(Fighter f : oponent)
-			    {
-			    	System.out.println(f.getFighterClass());
-			    }
 			    	
-//			    if (nbTour%2 == 0) {
-//			    	//System.out.println("pair");
-//			    	attack = client.move(idPartie, idEquipe,"A1,PROTECT,A2"
-//							+ "$A2,ATTACK,"+currentOp
-//							+ "$A3,HEAL,A2"
-//							);
-//			    }
-//			    else 
-//			    {
-//			    	//System.out.println("impair");
-//			    	attack = client.move(idPartie, idEquipe,"A1,ATTACK,"+currentOp
-//							+ "$A2,ATTACK,"+currentOp
-//							+ "$A3,REST,A3"
-//							);
-//			    }
+			    if (nbTour%2 == 0) {
 			    
-//			    try {
-//					if (oponent.) 
-//						{	
-//							currentOp = "E2";
-//						}
-//					else if (oponent[1].getIsDead()) 
-//						{
-//							currentOp ="E3";
-//						}
-//					
-//				}catch(ArrayIndexOutOfBoundsException e) 
-//				{
-//					e.printStackTrace();
-//				}
-			    
-			
-//				switch (attack)
-//				{
-//				case "OK":
-//					
-//					
-//					break;
-//				
-//				case "FORBIDDEN":// defaite sur la partie
-//					resp = "DEFEAT";
-//					break;
-//					
-//				case "NOTYET":
-//					System.out.println("pas encore");
-//					
-//					break;
-//				
-//				case "GAMEOVER":
-//					System.out.println("partie fini");
-//				}	
+			    	attack = client.move(idPartie, idEquipe,"A1,PROTECT,A2"
+							+ "$A2,ATTACK,"+currentOp
+							+ "$A3,HEAL,A2"
+							);
+			    }
+			    else 
+			    {
+			    	attack = client.move(idPartie, idEquipe,"A1,ATTACK,"+currentOp
+							+ "$A2,ATTACK,"+currentOp
+							+ "$A3,REST,A3"
+							);
+			    }
+
+				switch (attack)
+				{
+				case "OK":
+					try {
+						if (oponent.get(0).getIsDead()) 
+							{	
+							System.out.println("enemie 1 mort");
+								currentOp = "E2";
+							}
+						if (oponent.get(1).getIsDead()) 
+							{
+							System.out.println("enemie 2 mort");
+								currentOp ="E3";
+							}
+						
+					}catch(ArrayIndexOutOfBoundsException e) 
+					{
+						e.printStackTrace();
+					}
+					break;
+				
+				case "FORBIDDEN":// defaite sur la partie
+					resp = "DEFEAT";
+					break;
+					
+				case "NOTYET":
+					System.out.println("pas encore");
+				
+					break;
+				
+				case "GAMEOVER":
+					System.out.println("partie fini");
+				}	
+				
+				oponent.clear(); // on vide la liste pour la reremplir au tour d'après
 			}			
 	}
 	
