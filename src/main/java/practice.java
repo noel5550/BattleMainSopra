@@ -24,51 +24,27 @@ import java.util.ArrayList;
 
 public class practice {
 
-
-
 	private String idEquipe;
-
 	private String idPartie;
-
 	private String plateau;
-
 	private JSONObject plateauJeu;
 
-	
-
 	private String resp = "";
-
 	private String attack = "";
-
 	private int nbTour = 1;
-
 	private int index = 0;
-
-	
-
-	
 
 	String[] team = new String[3];
 
+	List<Fighter> equipe = new ArrayList<Fighter>();
 	List<Fighter> oponent = new ArrayList<Fighter>();
-
-	
-
 	String currentOp;
-
-	
 
 	int i = 0;
 
-	 
-
 	static JCliGet client = new JCliGet();
 
-
-
 	Board board;
-
-	
 
 	public practice()
 
@@ -91,16 +67,28 @@ public class practice {
 	private void newGame()
 
 	{
-
 		this.idEquipe = client.connect(); // recupération de l'identifiant du client	
-
-		this.idPartie = client.affrontementBot(3, this.idEquipe); // creation de la nouvelle partie contre l'ia
-
+		this.idPartie = client.affrontementBot(1, this.idEquipe); // creation de la nouvelle partie contre l'ia
 		board = client.plateau(idPartie, idEquipe);
-
 		jouerPartie(idPartie, idEquipe);
-
-		}
+	}
+	
+	private String Play(Fighter f , Fighter op , String spe)
+	{
+		String a ="";
+		int pa = f.getCurrentMana();
+		
+		if (pa == 0)
+			a = "A"+f.getOrderNumberInTeam()+",REST,"+"A"+op.getOrderNumberInTeam();
+		
+		else if (pa == 1)
+			a = "A"+f.getOrderNumberInTeam()+",ATTACK,"+"E"+op.getOrderNumberInTeam();
+		
+		else 
+			a = "A"+f.getOrderNumberInTeam()+","+spe+",E"+op.getOrderNumberInTeam();
+		
+		return a ;
+	}
 
 	
 
@@ -166,22 +154,27 @@ public class practice {
 			    board = client.plateau(idPartie);
 			    int j=0;
 			    int n=0;
+			    
 			    for(PlayerBoard playerBoards : board.getPlayerBoards()) 
 			    {
 			    	for(Fighter fight : playerBoards.getFighters()) 
 			    		{  
-			    			 if (playerBoards.getPlayerName().equals("NoelEtSesAmisInferieurs")){}	 
+			    			 if (playerBoards.getPlayerName().equals("NoelEtSesAmisInferieurs"))
+			    			 {
+			    				 equipe.add(fight);
+			    			 }	 
 			    			 else 
 			    			 {
 			    				 if (fight.getFighterClass().equals("PRIEST") && !fight.getIsDead()) 
 			    				 {
-			    					Fighter tmp;
 			    					if (!oponent.isEmpty())
 			    					{
+			    						Fighter tmp;
 			    						tmp = oponent.get(0);
 				    					oponent.set(0, fight);
 				    					oponent.add(tmp);
 			    					}
+			    					else oponent.add(fight);
 			    				 }
 			    				 else  if(!fight.getIsDead())
 			    					 oponent.add(fight);
@@ -190,19 +183,29 @@ public class practice {
 			    }
 			    currentOp ="E"+oponent.get(0).getOrderNumberInTeam();	 
 			    
-			    if (nbTour%2 == 0) {
-			    	attack = client.move(idPartie, idEquipe,"A1,ATTACK,"+currentOp
-															+ "$A2,ATTACK,"+currentOp
-															+ "$A3,HEAL,A3"
-							);
-			    }
-			    else 
-			    {
-			    	attack = client.move(idPartie, idEquipe,"A1,ATTACK,"+currentOp
-							+ "$A2,ATTACK,"+currentOp
-							+ "$A3,REST,A3"
-							);
-			    }
+			String a1 = Play(equipe.get(0),oponent.get(0),"PROTECT");
+			String a2 = Play(equipe.get(1),oponent.get(0),"YELL");
+			String a3 = Play(equipe.get(2),oponent.get(0),"HEAL");
+			    
+			  String a = "A1,ATTACK,"+currentOp
+			    		+"$"+a2
+			    		+"$"+a3;
+			  
+			  attack = client.move(idPartie, idEquipe, a);
+		
+//			    if (nbTour%2 == 0) {
+//			    	attack = client.move(idPartie, idEquipe,"A1,ATTACK,"+currentOp
+//															+ "$A2,ATTACK,"+currentOp
+//															+ "$A3,HEAL,A3"
+//							);
+//			    }
+//			    else 
+//			    {
+//			    	attack = client.move(idPartie, idEquipe,"A1,ATTACK,"+currentOp
+//							+ "$A2,ATTACK,"+currentOp
+//							+ "$A3,REST,A3"
+//							);
+//			    }
 			    
 				switch (attack)
 				{
@@ -223,8 +226,9 @@ public class practice {
 				oponent.clear(); // on vide la liste pour la reremplir au tour d'après
 
 			}			
-
 	}
+	
+	
 
 	
 
