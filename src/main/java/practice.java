@@ -43,10 +43,7 @@ public class practice {
 	String currentOp;
 
 	int i = 0;
-	
-	int mana1 = 1;
-	int mana2 = 1;
-	int mana3 = 1;
+
 
 	static JCliGet client = new JCliGet();
 
