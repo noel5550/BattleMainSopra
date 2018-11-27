@@ -10,9 +10,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 
-
-
-
 public class practice {
 
 	private String idEquipe;
@@ -27,10 +24,9 @@ public class practice {
 	
 	
 	String[] team = new String[3];
-//	Fighter[] oponent = new Fighter[6]; // revoir la taille du tableau
 	List<Fighter> oponent = new ArrayList<Fighter>();
 	
-	String currentOp = "E1";
+	String currentOp;
 	
 	int i = 0;
 	 
@@ -51,16 +47,13 @@ public class practice {
 	private void newGame()
 	{
 		this.idEquipe = client.connect(); // recupération de l'identifiant du client	
-		this.idPartie = client.affrontementBot(5, this.idEquipe); // creation de la nouvelle partie contre l'ia
+		this.idPartie = client.affrontementBot(2, this.idEquipe); // creation de la nouvelle partie contre l'ia
 		board = client.plateau(idPartie, idEquipe);
 		jouerPartie(idPartie, idEquipe);
 		}
 	
 	public void jouerPartie(String idPartie, String idEquipe) 
 	{
-	//JSONArray bot = plateauJeu.getJSONArray("playerBoards").getJSONObject(1).getJSONArray("fighters");
-		
-	//	System.out.println("bot "+bot);
 		resp = client.partie(idPartie, idEquipe); // recupère le statu de la partie
 		
 		do {
@@ -68,9 +61,9 @@ public class practice {
 				switch (resp)
 				{
 					case "CANPLAY":
-						board = client.plateau(idPartie, idEquipe);
-
-						   if (nbTour >3 && board != null) {
+						board = client.plateau(idPartie, idEquipe);			   
+						this.action();
+						if (nbTour >3 && board != null) {
 							   for(PlayerBoard playerBoards : board.getPlayerBoards()) {
 								   System.out.println();
 								   System.out.println("nom de l'équipe: "+playerBoards.getPlayerName());
@@ -81,32 +74,16 @@ public class practice {
 								   }     
 							   }
 						   }
-						this.action();
-						
-						System.out.println("enemie  actuel " + currentOp);
 						break;
 						
 					case "CANTPLAY":
 							Thread.sleep(500);
 						break;
 			
-						
-					case "VICTORY":
-						System.out.println("victoire");
-						break;
-						
-					case "DEFEAT":
-						System.out.println("defaite");
-						return;
-						
-					
-					case "DRAW":
-						System.out.println("draw");
-						return;
-					
-					case "CANCELLED":
-						System.out.println("annulé");
-						return;	
+//					case "VICTORY":System.out.println("victoire");break;
+//					case "DEFEAT":System.out.println("defaite");return;
+//					case "DRAW":System.out.println("draw");return;
+//					case "CANCELLED":System.out.println("annulé");return;	
 				}
 
 				resp = client.partie(idPartie, idEquipe); // recupère le statu de la partie
@@ -132,8 +109,6 @@ public class practice {
 				case 3: client.move(this.idPartie, this.idEquipe, team[2]);break;
 				}
 			}
-			
-			
 			else 
 			{
 			    board = client.plateau(idPartie);
@@ -144,20 +119,32 @@ public class practice {
 			    {
 			    	for(Fighter fight : playerBoards.getFighters()) 
 			    		{  
-			    			 if (playerBoards.getPlayerName().equals("NoelEtSesAmisInferieurs"))
-					    	 {
-								System.out.println("aaaaaaaaaaaaaaaa");
-							 }	  
+			    			 if (playerBoards.getPlayerName().equals("NoelEtSesAmisInferieurs")){}	 
 			    			 else 
 			    			 {
-			    				 oponent.add(fight);
+			    				 if (fight.getFighterClass().equals("PRIEST")) 
+			    				 {
+			    					Fighter tmp;
+			    					if (!oponent.isEmpty())
+			    					{
+			    						tmp = oponent.get(0);
+				    					oponent.set(0, fight);
+				    					oponent.add(tmp);
+			    					}
+			    					
+			    				 }
+			    				 if(!fight.getIsDead())
+			    					 oponent.add(fight);
 			    			 }
 						}     
 			    }
+			    
+			    
+			    currentOp ="E"+oponent.get(0).getOrderNumberInTeam();
 			    	
 			    if (nbTour%2 == 0) {
 			    
-			    	attack = client.move(idPartie, idEquipe,"A1,PROTECT,A2"
+			    	attack = client.move(idPartie, idEquipe,"A1,ATTACK,"+currentOp
 							+ "$A2,ATTACK,"+currentOp
 							+ "$A3,HEAL,A2"
 							);
@@ -170,20 +157,12 @@ public class practice {
 							);
 			    }
 
+			  
 				switch (attack)
 				{
 				case "OK":
 					try {
-						if (oponent.get(0).getIsDead()) 
-							{	
-							System.out.println("enemie 1 mort");
-								currentOp = "E2";
-							}
-						if (oponent.get(1).getIsDead()) 
-							{
-							System.out.println("enemie 2 mort");
-								currentOp ="E3";
-							}
+						
 						
 					}catch(ArrayIndexOutOfBoundsException e) 
 					{
@@ -191,17 +170,9 @@ public class practice {
 					}
 					break;
 				
-				case "FORBIDDEN":// defaite sur la partie
-					resp = "DEFEAT";
-					break;
-					
-				case "NOTYET":
-					System.out.println("pas encore");
-				
-					break;
-				
-				case "GAMEOVER":
-					System.out.println("partie fini");
+//				case "FORBIDDEN":resp = "DEFEAT";break;			
+//				case "NOTYET":System.out.println("pas encore");break;
+//				case "GAMEOVER":System.out.println("partie fini");
 				}	
 				
 				oponent.clear(); // on vide la liste pour la reremplir au tour d'après
