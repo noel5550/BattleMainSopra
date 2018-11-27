@@ -33,6 +33,8 @@ public class practice {
 	private String attack = "";
 	private int nbTour = 1;
 	private int index = 0;
+	
+	private boolean yell = false;
 
 	String[] team = new String[3];
 
@@ -41,6 +43,10 @@ public class practice {
 	String currentOp;
 
 	int i = 0;
+	
+	int mana1 = 1;
+	int mana2 = 1;
+	int mana3 = 1;
 
 	static JCliGet client = new JCliGet();
 
@@ -65,40 +71,10 @@ public class practice {
 
 	{
 		this.idEquipe = client.connect(); // recupération de l'identifiant du client	
-		this.idPartie = client.affrontementBot(5, this.idEquipe); // creation de la nouvelle partie contre l'ia
+		this.idPartie = client.affrontementBot(1, this.idEquipe); // creation de la nouvelle partie contre l'ia
 		board = client.plateau(idPartie, idEquipe);
 		jouerPartie(idPartie, idEquipe);
-	}
-	
-	private String Play(Fighter f , Fighter op , String spe)
-	{
-		String a ="";
-		int pa = f.getCurrentMana();
-		
-		
-		if (pa == 0)
-		{
-			a = "A"+f.getOrderNumberInTeam()+",REST,"+"A"+op.getOrderNumberInTeam();
-		}
-			
-		else if (pa == 1)
-		{
-			a = "A"+f.getOrderNumberInTeam()+",ATTACK,"+"E"+op.getOrderNumberInTeam();
-		}
-			
-		else 
-		{
-			if (spe.equals("HEAL") || spe.equals("PROTECT"))
-				a = "A"+f.getOrderNumberInTeam()+","+spe+",A"+f.getOrderNumberInTeam();
-			else
-				a = "A"+f.getOrderNumberInTeam()+","+spe+",E"+f.getOrderNumberInTeam();
-		}
-			
-		
-		return a ;
-	}
-
-	
+	}	
 
 	public void jouerPartie(String idPartie, String idEquipe) 
 
@@ -191,29 +167,34 @@ public class practice {
 			    }
 			    currentOp ="E"+oponent.get(0).getOrderNumberInTeam();	 
 			    
-//			String a1 = Play(equipe.get(0),oponent.get(0),"PROTECT");
-//			String a2 = Play(equipe.get(1),oponent.get(0),"YELL");
-//			String a3 = Play(equipe.get(2),oponent.get(0),"HEAL");
-//			    
-//			 String a = "A1,ATTACK,"+currentOp
-//			    		+"$"+a2
-//			    		+"$"+a3;
-//			  
-//			  attack = client.move(idPartie, idEquipe, a);
+			String a1 = "A1,ATTACK,"+currentOp;
+			String a2 = Play(equipe.get(1),oponent.get(0),"YELL",2);
+			String a3 =	Play(equipe.get(2),"HEAL",2);
+			    
+			 String a = "A1,ATTACK,"+currentOp
+			    		+"$"+a2
+			    		+"$"+a3;
+			 
+			 System.out.println("aaaaaaaaaaaaaaaaaaa " +equipe.get(1).getStates()); 
+			  attack = client.move(idPartie, idEquipe, a);
+			  
+			  
+//			  System.out.println("aaaaaaaaaaaaaaaaaaa");
+//			  System.out.println(a);
 		
-			    if (nbTour%2 == 0) {
-			    	attack = client.move(idPartie, idEquipe,"A1,ATTACK,"+currentOp
-															+ "$A2,ATTACK,"+currentOp
-															+ "$A3,HEAL,A3"
-							);
-			    }
-			    else 
-			    {
-			    	attack = client.move(idPartie, idEquipe,"A1,PROTECT,A3"
-							+ "$A2,ATTACK,"+currentOp
-							+ "$A3,REST,A3"
-							);
-			    }
+//			    if (nbTour%2 == 0) {
+//			    	attack = client.move(idPartie, idEquipe,"A1,ATTACK,"+currentOp
+//															+ "$A2,ATTACK,"+currentOp
+//															+ "$A3,HEAL,A3"
+//							);
+//			    }
+//			    else 
+//			    {
+//			    	attack = client.move(idPartie, idEquipe,"A1,PROTECT,A3"
+//							+ "$A2,ATTACK,"+currentOp
+//							+ "$A3,REST,A3"
+//							);
+//			    }
 			    
 				switch (attack)
 				{
@@ -224,17 +205,76 @@ public class practice {
 						e.printStackTrace();
 					}
 					break;
-//				case "FORBIDDEN":resp = "DEFEAT";break;			
-
-//				case "NOTYET":System.out.println("pas encore");break;
-
-//				case "GAMEOVER":System.out.println("partie fini");
-
 				}	
 				oponent.clear(); // on vide la liste pour la reremplir au tour d'après
 
 			}			
 	}
+	
+	// PROBLEME A RESOUDRE ==> recupéré les points d'action disponible
+	
+	private String Play(Fighter f , Fighter op , String spe)
+	{
+		String a ="";
+		int pa = f.getCurrentMana();		
+		if (pa == 0)
+		{
+			a = "A"+f.getOrderNumberInTeam()+",REST,"+"A"+op.getOrderNumberInTeam();
+		}
+		else if (pa == 1)
+		{
+			a = "A"+f.getOrderNumberInTeam()+",ATTACK,"+"E"+op.getOrderNumberInTeam();
+		}	
+		else 
+		{
+			a = "A"+f.getOrderNumberInTeam()+","+spe+",E"+op.getOrderNumberInTeam();
+		}
+		return a ;
+	}
+	
+	// soin + protect
+		private String Play(Fighter f , String spe , int pa )
+		{
+			String a = "";
+			
+			if (f.getCurrentMana().equals(pa))
+				a = "A"+f.getOrderNumberInTeam()+","+spe+",A"+f.getOrderNumberInTeam();
+			
+			else 
+				a = "A"+f.getOrderNumberInTeam()+",REST,"+"A"+f.getOrderNumberInTeam();
+			
+			return a;
+		}
+		
+		//Yell sur l'enemi , l'attaque tour d'après
+		private String Play(Fighter f , Fighter op , String spe , int pa)
+		{
+			String a="";
+			
+			if (f.getMaxAvailableMana().equals(pa))
+			{	
+				a = "A"+f.getOrderNumberInTeam()+","+spe+",E"+op.getOrderNumberInTeam();
+				yell = true;
+			}
+				
+			
+			else if (f.getMaxAvailableMana() < pa)
+			{
+				System.out.println("nom");
+				if (yell)
+				{
+					a = "A"+f.getOrderNumberInTeam()+","+spe+",E"+op.getOrderNumberInTeam();
+					yell  = false;
+				}		
+			}
+				
+			else 
+			{
+				a = "A"+f.getOrderNumberInTeam()+",REST,"+"A"+op.getOrderNumberInTeam();
+			}
+				
+			return a;
+		}
 	
 	
 
