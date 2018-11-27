@@ -4,28 +4,17 @@ import com.mkyong.client.*;
 
 import javassist.bytecode.Opcode;
 
-
-
 import java.util.List;
-
-
-
 import org.json.*;
-
 import org.json.JSONArray;
-
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 
-
-
-
-
-public class practice {
+public class versus {
 
 	private String idEquipe;
 	private String idPartie;
+	private String idAdversaire;
 	private String plateau;
 	private JSONObject plateauJeu;
 
@@ -46,26 +35,22 @@ public class practice {
 
 	Board board;
 
-	public practice()
-
+	public versus()
 	{	
-
 		team[0] = "GUARD";
 		team[1] ="ORC";
 		team[2] = "PRIEST";
-
-		newGame();
+		nextGame();
 
 	}
 
 
 //initialise la partie
 
-	private void newGame()
-
+	private void nextGame()
 	{
 		this.idEquipe = client.connect(); // recupération de l'identifiant du client	
-		this.idPartie = client.affrontementBot(5, this.idEquipe); // creation de la nouvelle partie contre l'ia
+		this.idPartie = client.affrontementJoueur(this.idEquipe);
 		board = client.plateau(idPartie, idEquipe);
 		jouerPartie(idPartie, idEquipe);
 	}
