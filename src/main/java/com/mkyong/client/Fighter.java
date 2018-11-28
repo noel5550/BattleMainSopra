@@ -46,6 +46,24 @@ public class Fighter {
 	@Expose
 	private Object diffLife;
 	
+	private int mana = 0;
+	
+	public int getMana()
+	{
+		return mana;
+	}
+	
+	public void SetMana(int mana)
+	{
+		this.mana = mana;
+	}
+	
+	
+	public void addMana()
+	{
+		this.mana = this.mana + 1;
+	}
+	
 	public String getFighterClass() {
 	return fighterClass;
 	}

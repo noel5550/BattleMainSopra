@@ -19,7 +19,7 @@ public class JCliGet {
    public void test() {
 	   Client client = ClientBuilder.newClient();
 	  
-	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/ping");
+	   WebTarget webTarget = client.target("http://jourj.codeandplay.pw/epic-ws/epic/ping");
 	   Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
 	   Response response = invocationBuilder.get();
 	   
@@ -34,7 +34,7 @@ public class JCliGet {
 public String connect() {
 	
 	   Client client = ClientBuilder.newClient();
-	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/player/getIdEquipe/NoelEtSesAmisInferieurs/KJheror883!");
+	   WebTarget webTarget = client.target("http://jourj.codeandplay.pw/epic-ws/epic/player/getIdEquipe/NoelEtSesAmisInferieurs/KJheror883!");
 	   Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
 	   Response response = invocationBuilder.get();
 	   
@@ -51,7 +51,7 @@ public String connect() {
  */
 public String affrontementJoueur(String idEquipe)   {
 	   Client client = ClientBuilder.newClient();
-	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/versus/next/"+idEquipe);
+	   WebTarget webTarget = client.target("http://jourj.codeandplay.pw/epic-ws/epic/versus/next/"+idEquipe);
 	   Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
 	   Response response = invocationBuilder.get();
 	   
@@ -70,15 +70,15 @@ public String affrontementJoueur(String idEquipe)   {
  */
 public String affrontementBot(int nbIA, String idEquipe)  {
 	    String resp = "";
-		if (0<nbIA && nbIA<6 ){
+		
 			Client client = ClientBuilder.newClient();
-			   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/practice/new/"+nbIA+"/"+idEquipe);
+			   WebTarget webTarget = client.target("http://jourj.codeandplay.pw/epic-ws/epic/practice/new/"+nbIA+"/"+idEquipe);
 			   Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
 			   Response response = invocationBuilder.get();
 			   
 			   resp = response.readEntity(String.class);
 			   System.out.println(resp);
-		}
+
 	   return resp;
    }
    
@@ -101,7 +101,7 @@ public String affrontementBot(int nbIA, String idEquipe)  {
 public String partie(String idPartie , String idEquipe)   {
 	
 	   Client client = ClientBuilder.newClient();
-	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/game/status/"+idPartie+"/"+idEquipe);
+	   WebTarget webTarget = client.target("http://jourj.codeandplay.pw/epic-ws/epic/game/status/"+idPartie+"/"+idEquipe);
 	   Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
 	   Response response = invocationBuilder.get();
 	  
@@ -116,7 +116,7 @@ public String partie(String idPartie , String idEquipe)   {
 public Board plateau(String idPartie) 
 {
 	   Client client = ClientBuilder.newClient();
-	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/game/board/"+idPartie);
+	   WebTarget webTarget = client.target("http://jourj.codeandplay.pw/epic-ws/epic/game/board/"+idPartie);
 	   Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
 	   Response response = invocationBuilder.get();
 	  
@@ -141,7 +141,7 @@ public Board plateau(String idPartie)
 public Board plateau(String idPartie, String idEquipe)
 {
 	   Client client = ClientBuilder.newClient();
-	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/game/board/"+idPartie+"/"+idEquipe+"?format=JSON");
+	   WebTarget webTarget = client.target("http://jourj.codeandplay.pw/epic-ws/epic/game/board/"+idPartie+"/"+idEquipe+"?format=JSON");
 	   Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
 	   Response response = invocationBuilder.get();
 	   
@@ -178,7 +178,7 @@ public Board plateau(String idPartie, String idEquipe)
 public String dernierCoup(String idPartie , String idEquipe)
 {
 	   Client client = ClientBuilder.newClient();
-	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/game/getlastmove/"+idPartie+"/"+idEquipe);
+	   WebTarget webTarget = client.target("http://jourj.codeandplay.pw/epic-ws/epic/game/getlastmove/"+idPartie+"/"+idEquipe);
 	   Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
 	   Response response = invocationBuilder.get();
 	  
@@ -201,7 +201,7 @@ public String dernierCoup(String idPartie , String idEquipe)
 public String move(String idPartie , String idEquipe , String move)
 {
 	   Client client = ClientBuilder.newClient();
-	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/game/play/"+idPartie+"/"+idEquipe+"/"+move);
+	   WebTarget webTarget = client.target("http://jourj.codeandplay.pw/epic-ws/epic/game/play/"+idPartie+"/"+idEquipe+"/"+move);
 	   Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
 	   Response response = invocationBuilder.get();
 	  
@@ -214,7 +214,7 @@ public String move(String idPartie , String idEquipe , String move)
 public String nomAdversaire(String idPartie, String idEquipe)
 {
 	   Client client = ClientBuilder.newClient();
-	   WebTarget webTarget = client.target("http://codeandplay.pw/epic-ws/epic/game/opponent/"+idPartie+"/"+idEquipe);
+	   WebTarget webTarget = client.target("http://jourj.codeandplay.pw/epic-ws/epic/game/opponent/"+idPartie+"/"+idEquipe);
 	   Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
 	   Response response = invocationBuilder.get();
 	  

@@ -78,12 +78,9 @@ public class versus {
 			else
 				a = "A"+f.getOrderNumberInTeam()+","+spe+",E"+f.getOrderNumberInTeam();
 		}
-			
-		
+				
 		return a ;
 	}
-
-	
 
 	public void jouerPartie(String idPartie, String idEquipe) 
 
@@ -176,6 +173,7 @@ public class versus {
 			    }
 			    currentOp ="E"+oponent.get(0).getOrderNumberInTeam();	 
 			    
+			    System.out.println("aaaaaaaaaaaaaaaaaa "+currentOp);
 //			String a1 = Play(equipe.get(0),oponent.get(0),"PROTECT");
 //			String a2 = Play(equipe.get(1),oponent.get(0),"YELL");
 //			String a3 = Play(equipe.get(2),oponent.get(0),"HEAL");
